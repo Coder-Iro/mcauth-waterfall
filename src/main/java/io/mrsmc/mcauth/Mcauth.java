@@ -1,12 +1,11 @@
 package io.mrsmc.mcauth;
 
-import com.j256.twofactorauth.TimeBasedOneTimePasswordUtil;
 import com.google.common.io.BaseEncoding;
+import com.j256.twofactorauth.TimeBasedOneTimePasswordUtil;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
-import org.jetbrains.annotations.NotNull;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
 
@@ -29,6 +28,7 @@ public final class Mcauth extends Plugin implements Listener {
         instance = this;
         getProxy().getPluginManager().registerListener(this, this);
     }
+
     @EventHandler
     public void onLogin(LoginEvent e) {
         e.setCancelled(true);
@@ -89,11 +89,9 @@ public final class Mcauth extends Plugin implements Listener {
      * into {@code "### ###"} with leading zeros if needed
      *
      * @param num The number to format
-     *
      * @return The formatted number as a {@link String}, never null
      */
-    private static @NotNull
-    String formatOTP(long num) {
+    private static String formatOTP(long num) {
         String numStr = Long.toString(num);
 
         if (numStr.length() > 6)
