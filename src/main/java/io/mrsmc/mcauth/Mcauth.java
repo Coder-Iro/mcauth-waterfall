@@ -24,7 +24,7 @@ public final class Mcauth extends Plugin implements Listener {
     // 인증번호 부여 성공시 킥 메시지
     // 사용 가능 플레이스홀더: {OTP}, {Name}, {UUID}
     private final String KICK_SUCCESS = """
-            &3&nMystic Red Space
+            &d&lMystic &c&lRed &9&lSpace
 
             &6${Name}&e 님의 인증코드
 
@@ -33,12 +33,12 @@ public final class Mcauth extends Plugin implements Listener {
     // 인증번호 부여 성공시 킥 메시지
     // 사용 가능 플레이스홀더: {Name}, {UUID}
     private final String KICK_ERROR = """
-            &3&nMc-Auth.com
+            &d&lMystic &c&lRed &9&lSpace
 
-            &cAn error occurred!
-            Please try again shortly or contact Sprax
+            &c오류가 발생했습니다!
+            잠시 후에 다시 시도하거나, 서버에 문의하세요.
 
-            &3https://Sprax2013.de""";
+            &3https://mrsmc.xyz""";
 
     static Mcauth instance;
     private MessageDigest sha256;
