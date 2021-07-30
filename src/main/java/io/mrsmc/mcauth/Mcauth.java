@@ -2,6 +2,9 @@ package io.mrsmc.mcauth;
 
 import com.google.common.io.BaseEncoding;
 import com.j256.twofactorauth.TimeBasedOneTimePasswordUtil;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -9,13 +12,28 @@ import net.md_5.bungee.event.EventHandler;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
 
+import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public final class Mcauth extends Plugin implements Listener {
+    private final String KICK_SUCCESS = """
+            &3&nMystic Red Space
+
+            &6${Name}&e 님의 인증코드
+
+            &6${OTP}""";
+    private final String KICK_ERROR = """
+            &3&nMc-Auth.com
+
+            &cAn error occurred!
+            Please try again shortly or contact Sprax
+
+            &3https://Sprax2013.de""";
     static Mcauth instance;
     private MessageDigest sha256;
     private final ExecutorService pool = Executors.newCachedThreadPool();
@@ -33,38 +51,31 @@ public final class Mcauth extends Plugin implements Listener {
     public void onLogin(LoginEvent e) {
         e.setCancelled(true);
         e.registerIntent(this);
-
-/*
+        PendingConnection con = e.getConnection();
         pool.execute(() -> {
             try {
-                // Update client in database
-                dbUtils.updateAccount(e.getConnection().getUniqueId(), e.getConnection().getName());
-
-                // Does the database already have a valid code for that client?
-                int code = dbUtils.getCode(e.getConnection().getUniqueId());
-
-                // No? Generate a new one and store it inside the database
-                if (code == -1) {
-                    code = TimeBasedOneTimePasswordUtil.generateCurrentNumber(generateSecret(e.getConnection().getUniqueId()), 6);
-
-                    dbUtils.setCode(e.getConnection().getUniqueId(), code);
+                int code;
+                if (!redis.exists(con.getName())) {
+                    code = TimeBasedOneTimePasswordUtil.generateCurrentNumber(generateSecret(con.getUniqueId()), 6);
+                    HashMap<String, String> data = new HashMap<>();
+                    data.put("UUID", con.getUniqueId().toString());
+                    data.put("code", Integer.toString(code));
+                    redis.hset(con.getName(), data);
+                } else {
+                    code = Integer.parseInt(redis.hget(con.getName(), "code"));
                 }
-
-                // Format the code to look like "### ###"
                 String codeStr = formatOTP(code);
 
                 // Kick the client and
                 e.setCancelReason(TextComponent.fromLegacyText(
                         ChatColor.translateAlternateColorCodes('&',
-                                Objects.requireNonNull(Settings.KICK_SUCCESS.getValueAsString())
+                                KICK_SUCCESS
                                         .replace("${OTP}", codeStr)
                                         .replace("${Name}", e.getConnection().getName())
                                         .replace("${UUID}", e.getConnection().getUniqueId().toString())
                         )
                 ));
-
-                getLogger().info(e.getConnection().getName() + " successfully requested an One-Time-Password");
-            } catch (GeneralSecurityException | SQLException ex) {
+            } catch (GeneralSecurityException ex) {
                 ex.printStackTrace();
                 getLogger().warning("Could not generate an One-Time-Password for " + e.getConnection().getName() +
                         " (" + e.getConnection().getUniqueId().toString() + ")");
@@ -72,16 +83,13 @@ public final class Mcauth extends Plugin implements Listener {
                 // Notify the client about an error
                 e.setCancelReason(TextComponent.fromLegacyText(
                         ChatColor.translateAlternateColorCodes('&',
-                                Objects.requireNonNull(Settings.KICK_ERROR.getValueAsString())
-                                        .replace("${Name}", e.getConnection().getName())
+                                KICK_ERROR.replace("${Name}", e.getConnection().getName())
                                         .replace("${UUID}", e.getConnection().getUniqueId().toString())
                         )
                 ));
             }
-
             e.completeIntent(instance);
         });
-*/
     }
 
     /**

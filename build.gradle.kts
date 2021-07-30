@@ -21,5 +21,6 @@ tasks {
     withType<JavaCompile> {
         sourceCompatibility = JavaVersion.VERSION_16.toString()
         targetCompatibility = JavaVersion.VERSION_16.toString()
+        options.encoding = "x-windows-949"
     }
 }
