@@ -21,22 +21,22 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public final class Mcauth extends Plugin implements Listener {
-    // ì¸ì¦ë²ˆí˜¸ ë¶€ì—¬ ì„±ê³µì‹œ í‚¥ ë©”ì‹œì§€
-    // ì‚¬ìš© ê°€ëŠ¥ í”Œë ˆì´ìŠ¤í™€ë”: {OTP}, {Name}, {UUID}
+    // ÀÎÁõ¹øÈ£ ºÎ¿© ¼º°ø½Ã Å± ¸Þ½ÃÁö
+    // »ç¿ë °¡´É ÇÃ·¹ÀÌ½ºÈ¦´õ: {OTP}, {Name}, {UUID}
     private final String KICK_SUCCESS = """
             &3&lMystic &c&lRed &d&lSpace
 
-            &6${Name}&e ë‹˜ì˜ ì¸ì¦ì½”ë“œ
+            &6${Name}&e ´ÔÀÇ ÀÎÁõÄÚµå
 
             &6${OTP}""";
 
-    // ì¸ì¦ë²ˆí˜¸ ë¶€ì—¬ ì„±ê³µì‹œ í‚¥ ë©”ì‹œì§€
-    // ì‚¬ìš© ê°€ëŠ¥ í”Œë ˆì´ìŠ¤í™€ë”: {Name}, {UUID}
+    // ÀÎÁõ¹øÈ£ ºÎ¿© ¼º°ø½Ã Å± ¸Þ½ÃÁö
+    // »ç¿ë °¡´É ÇÃ·¹ÀÌ½ºÈ¦´õ: {Name}, {UUID}
     private final String KICK_ERROR = """
             &d&lMystic &c&lRed &9&lSpace
 
-            &cì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤!
-            ìž ì‹œ í›„ì— ë‹¤ì‹œ ì‹œë„í•˜ê±°ë‚˜, ì„œë²„ì— ë¬¸ì˜í•˜ì„¸ìš”.
+            &c¿À·ù°¡ ¹ß»ýÇß½À´Ï´Ù!
+            Àá½Ã ÈÄ¿¡ ´Ù½Ã ½ÃµµÇÏ°Å³ª, ¼­¹ö¿¡ ¹®ÀÇÇÏ¼¼¿ä.
 
             &3https://mrsmc.xyz""";
 
