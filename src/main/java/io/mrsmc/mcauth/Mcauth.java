@@ -33,10 +33,10 @@ public final class Mcauth extends Plugin implements Listener {
     // 인증번호 부여 성공시 킥 메시지
     // 사용 가능 플레이스홀더: {Name}, {UUID}
     private final String KICK_ERROR = """
-            &d&lMystic &c&lRed &9&lSpace
+            &3&lMystic &c&lRed &d&lSpace
 
-            &c오류가 발생했습니다!
-            잠시 후에 다시 시도하거나, 서버에 문의하세요.
+            &c&l오류가 발생했습니다!
+            &r잠시 후에 다시 시도하거나, 서버에 문의하세요.
 
             &3https://mrsmc.xyz""";
 
