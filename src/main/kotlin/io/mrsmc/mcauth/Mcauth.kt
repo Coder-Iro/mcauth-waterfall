@@ -23,50 +23,6 @@ class Mcauth : Plugin() {
         proxy.pluginManager.registerListener(this, McauthListener(this))
     }
 
-    companion object {
-        // 인증번호 부여 성공시 킥 메시지
-        // 사용 가능 플레이스홀더: {OTP}, {Name}, {UUID}
-        private const val KICK_SUCCESS = """
-            &3&lMystic &c&lRed &d&lSpace
-
-            &6{}&e 님의 인증코드
-
-            &6{}"""
-
-        // 인증번호 부여 성공시 킥 메시지
-        // 사용 가능 플레이스홀더: {Name}, {UUID}
-        private const val KICK_ERROR = """
-            &3&lMystic &c&lRed &d&lSpace
-
-            &c&l오류가 발생했습니다!
-            &r잠시 후에 다시 시도하거나, 서버에 문의하세요.
-
-            &3https://mrsmc.xyz"""
-
-        private val secretSalt = TimeBasedOneTimePasswordUtil.generateBase32Secret()
-
-        private var SHA_256: MessageDigest? = null
-
-        fun generateSecret(uuid: UUID): String {
-            val messageDigest = SHA_256 ?: run {
-                val instance = MessageDigest.getInstance("SHA-256")
-                SHA_256 = instance
-                instance
-            }
-
-            return BaseEncoding.base32().encode(messageDigest.digest((uuid.toString() + secretSalt).toByteArray()))
-        }
-
-        fun formatOTP(num: Int): String {
-            require(num in 0 until 1_000_000) {
-                "Argument num may not consist of more than 6 digits"
-            }
-
-            val otp = num.toString().padEnd(6, '0')
-            return "${otp.take(3)} ${otp.takeLast(3)}"
-        }
-    }
-
     private class McauthListener(private val plugin: Mcauth) : Listener {
         private val pool = Executors.newCachedThreadPool()
         private val redis = plugin.redis
@@ -109,6 +65,48 @@ class Mcauth : Plugin() {
                     ))
                 }
                 event.completeIntent(plugin)
+            }
+        }
+
+        companion object {
+            // 인증번호 부여 성공시 킥 메시지
+            private const val KICK_SUCCESS = """
+            &3&lMystic &c&lRed &d&lSpace
+
+            &6{}&e 님의 인증코드
+
+            &6{}"""
+
+            // 인증번호 부여 성공시 킥 메시지
+            private const val KICK_ERROR = """
+            &3&lMystic &c&lRed &d&lSpace
+
+            &c&l오류가 발생했습니다!
+            &r잠시 후에 다시 시도하거나, 서버에 문의하세요.
+
+            &3https://mrsmc.xyz"""
+
+            private val secretSalt = TimeBasedOneTimePasswordUtil.generateBase32Secret()
+
+            private var SHA_256: MessageDigest? = null
+
+            fun generateSecret(uuid: UUID): String {
+                val messageDigest = SHA_256 ?: run {
+                    val instance = MessageDigest.getInstance("SHA-256")
+                    SHA_256 = instance
+                    instance
+                }
+
+                return BaseEncoding.base32().encode(messageDigest.digest((uuid.toString() + secretSalt).toByteArray()))
+            }
+
+            fun formatOTP(num: Int): String {
+                require(num in 0 until 1_000_000) {
+                    "Argument num may not consist of more than 6 digits"
+                }
+
+                val otp = num.toString().padEnd(6, '0')
+                return "${otp.take(3)} ${otp.takeLast(3)}"
             }
         }
     }
